@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro"  name="robot">
+
+    <xacro:arg name="use_ros2_control" default="true"/>
+    <xacro:arg name="sensors" default="depth_camera"/>
+
+    <xacro:include filename="robot_core.xacro" />
+
+    <xacro:if value="$(arg use_ros2_control)">
+        <xacro:include filename="ros2_control.xacro" />
+    </xacro:if>
+    <xacro:unless value="$(arg use_ros2_control)">
+        <xacro:include filename="gazebo_control.xacro" />
+    </xacro:unless>
+
+
+    <xacro:if value="${'$(arg sensors)' == 'lidar_3D'}">
+        <xacro:include filename="lidar_3d.xacro" />
+        <xacro:include filename="camera.xacro" />
+    </xacro:if>
+
+    <xacro:if value="${'$(arg sensors)' == 'depth_camera'}">
+        <xacro:include filename="depth_camera.xacro" />
+    </xacro:if>
+    
+
+</robot>
