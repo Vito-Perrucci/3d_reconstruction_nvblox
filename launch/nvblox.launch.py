@@ -101,7 +101,7 @@ def launch_setup(context, *args, **kwargs):
     # Choose remapping based on sensor type
     if sensors_str == 'depth_camera':
         chosen_params = remappings_depth
-    elif sensors_str == 'lidar_3D':
+    elif sensors_str == 'lidar_3D' or sensors_str == 'lidar_3D_and_Slam':
         chosen_params = remapping_lidar_3d
 
     # NVBlox node

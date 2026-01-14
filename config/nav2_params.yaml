@@ -173,7 +173,7 @@ local_costmap:
       footprint_padding: 0.03
       update_frequency: 5.0
       publish_frequency: 2.0
-      global_frame: odom
+      global_frame: map
       robot_base_frame: base_link
       rolling_window: true
       width: 6
@@ -183,25 +183,41 @@ local_costmap:
       footprint: "[ [0.14, 0.25], [0.14, -0.25], [-0.607, -0.25], [-0.607, 0.25] ]"
       mark_threshold: 2
       always_send_full_costmap: True
-      plugins: ['nvblox_layer', 'inflation_layer']
+      plugins: ['static_layer', 'obstacle_layer', 'inflation_layer']
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         enabled: True
-        cost_scaling_factor: 10.0
-        inflation_radius: 0.8
-      nvblox_layer:
-        plugin: "nvblox::nav2::NvbloxCostmapLayer"
+        cost_scaling_factor: 10.0 # an higher value restrict the dangerous zone, a lower one expands it slightly
+        inflation_radius: 0.8 # higher the value, higher the safe zone arounf obstacles
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
-        nav2_costmap_global_frame: odom # must match with global_frame of local_costmap
-        nvblox_map_slice_topic: "/nvblox_node/static_map_slice"
-        convert_to_binary_costmap: True
+        max_obstacle_height: 2.0
+        min_obstacle_height: 0.0
+        laser_scan_sensor:
+          topic: /lidar_points
+          data_type: PointCloud2
+          marking: True
+          clearing: True
+      static_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        enabled: True
+        map_topic: "/map"
+        subscribe_to_updates: True
+        transform_tolerance: 0.0
+      # nvblox_layer:
+      #   plugin: "nvblox::nav2::NvbloxCostmapLayer"
+      #   enabled: True
+      #   nav2_costmap_global_frame: odom # must match with global_frame of local_costmap
+      #   nvblox_map_slice_topic: "/nvblox_node/static_map_slice"
+      #   convert_to_binary_costmap: True
 global_costmap:
   global_costmap:
     ros__parameters:
       footprint_padding: 0.0
       update_frequency: 1.0
       publish_frequency: 1.0
-      global_frame: odom
+      global_frame: map
       robot_base_frame: base_link
       use_sim_time: True
       footprint: "[ [0.14, 0.25], [0.14, -0.25], [-0.607, -0.25], [-0.607, 0.25] ]"
@@ -214,18 +230,33 @@ global_costmap:
       track_unknown_space: False
       mark_threshold: 2
       always_send_full_costmap: False
-      plugins: ['nvblox_layer', 'inflation_layer']
+      plugins: ['static_layer', 'obstacle_layer', 'inflation_layer']
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         enabled: True
-        cost_scaling_factor: 10.0
-        inflation_radius: 0.8
-      nvblox_layer:
-        plugin: "nvblox::nav2::NvbloxCostmapLayer"
+        cost_scaling_factor: 10.0 # an higher value restrict the dangerous zone, a lower one expands it slightly
+        inflation_radius: 0.8 # higher the value, higher the safe zone arounf obstacles
+      obstacle_layer:
+        plugin: "nav2_costmap_2d::ObstacleLayer"
         enabled: True
-        nav2_costmap_global_frame: odom # must match with global_frame of global_costmap
-        nvblox_map_slice_topic: "/nvblox_node/combined_map_slice"
-        convert_to_binary_costmap: True
+        max_obstacle_height: 2.0
+        laser_scan_sensor:
+          topic: /lidar_points
+          data_type: PointCloud2
+          marking: True
+          clearing: True
+      static_layer:
+        plugin: "nav2_costmap_2d::StaticLayer"
+        enabled: True
+        map_topic: "/map"
+        subscribe_to_updates: True
+        transform_tolerance: 0.0
+      # nvblox_layer:
+      #   plugin: "nvblox::nav2::NvbloxCostmapLayer"
+      #   enabled: True
+      #   nav2_costmap_global_frame: odom # must match with global_frame of global_costmap
+      #   nvblox_map_slice_topic: "/nvblox_node/combined_map_slice"
+      #   convert_to_binary_costmap: True
 map_server:
   ros__parameters:
     use_sim_time: True

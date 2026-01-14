@@ -13,8 +13,11 @@
         <xacro:include filename="gazebo_control.xacro" />
     </xacro:unless>
 
+    <xacro:if value="${'$(arg sensors)' == 'lidar'}">
+        <xacro:include filename="lidar.xacro" />
+    </xacro:if>
 
-    <xacro:if value="${'$(arg sensors)' == 'lidar_3D'}">
+    <xacro:if value="${'$(arg sensors)' == 'lidar_3D' or '$(arg sensors)' == 'lidar_3D_and_Slam'}">
         <xacro:include filename="lidar_3d.xacro" />
         <xacro:include filename="camera.xacro" />
     </xacro:if>
@@ -22,6 +25,5 @@
     <xacro:if value="${'$(arg sensors)' == 'depth_camera'}">
         <xacro:include filename="depth_camera.xacro" />
     </xacro:if>
-    
 
 </robot>

@@ -34,7 +34,7 @@ def generate_launch_description():
     sensors_arg = DeclareLaunchArgument(
         'sensors',
         default_value='depth_camera',
-        description='Which sensors to enable (camera, lidar_3d)'
+        description='Which sensors to enable (depth_camera, lidar_3d, lidar)'
     )
 
 
@@ -84,7 +84,33 @@ def generate_launch_description():
         executable="spawner",
         arguments=["joint_broad"],
     )
-    
+
+    pointcloud_to_laserscan_node = Node(
+        package='pointcloud_to_laserscan',
+        executable='pointcloud_to_laserscan_node',
+        name='pointcloud_to_laserscan',
+        output='screen',
+        parameters=[{
+            'use_sim_time': True,
+            'target_frame': 'laser_frame',
+            'transform_tolerance': 0.01,
+            
+            'min_height': 0.15,        
+            'max_height': 0.20,         
+            
+            # 'range_min': 0.3,       
+            # 'range_max': 12.0,            
+            
+            'scan_time': 0.1,       
+            'concurrency_level': 1,
+        }],
+        remappings=[
+            ('cloud_in', '/lidar_points'),
+            ('scan', '/scan')
+        ]
+    )
+
+
     # twist mux (merging two cmd_vel sources)
     twist_mux = Node(
         package='twist_mux',
@@ -130,6 +156,11 @@ def generate_launch_description():
             rviz_file = 'depth_camera.rviz'
         elif sensors_value == 'lidar_3D':
             rviz_file = 'lidar_3D.rviz'
+        elif sensors_value == 'lidar':
+            rviz_file = 'lidar.rviz'
+        elif sensors_value == 'lidar_3D_and_Slam':
+            rviz_file = 'lidar_3D_map.rviz'
+            
 
         rviz_config = os.path.join(
             get_package_share_directory(package_name), 'config', rviz_file
@@ -146,7 +177,6 @@ def generate_launch_description():
 
     rviz_launcher = OpaqueFunction(function=launch_rviz)
 
-
     # ---------------------- LAUNCHER ----------------------
     return LaunchDescription([
         nvblox_mode_arg,
@@ -160,6 +190,7 @@ def generate_launch_description():
         nvblox,
         twist_mux,
         nav2,
-        rviz_launcher
+        rviz_launcher,
+        pointcloud_to_laserscan_node
     ])
 

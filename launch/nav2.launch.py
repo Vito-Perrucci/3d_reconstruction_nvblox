@@ -40,8 +40,9 @@ def generate_launch_description():
             'slam': 'False',
             'map': os.path.join(
                 get_package_share_directory(package_name),
-                'config',
-                'empty_map.yaml'
+                'maps',
+                'cones_save.yaml'
+                # 'face_to_wall_save.yaml'
             )
         }.items()
     )
