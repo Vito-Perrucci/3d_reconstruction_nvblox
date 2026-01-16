@@ -1,5 +1,4 @@
 # 3D Reconstruction Project – Personal Thesis (Vito Perrucci)
-
 This project implements a **3D reconstruction pipeline** using [nvblox] (https://nvidia-isaac-ros.github.io/concepts/scene_reconstruction/nvblox/index.html).  
 It is part of my personal thesis work and is designed to run inside the **Isaac ROS container** provided by NVIDIA, which simplifies the deployment of `nvblox` and its dependencies.
 
@@ -18,6 +17,20 @@ The goal of this project is to provide a fully functional 3D reconstruction pipe
 The container ensures all required libraries and tools are pre-installed, minimizing setup time and compatibility issues.
 
 ---
+
+<!-- ![Demo](./gifs/) -->
+
+<p align="center">
+<strong>Depth camera and 3D LiDAR Reconstruction demos</strong><br>
+  <img src="./gif/depth_reconstruction_gazebo.gif"  width="400"/>
+  <img src="./gif/only lidar reco.gif"  width="400"/>
+</p>
+
+<p align="center">
+    <strong>Coloration close up and complete demo overview with costmap</strong><br>
+  <img src="./gif/lidar coloration close up.gif"  width="400"/>
+  <img src="./gif/depth_costmap_compressed.gif"  width="400"/>
+</p>
 
 ## Setup & Installation
 
