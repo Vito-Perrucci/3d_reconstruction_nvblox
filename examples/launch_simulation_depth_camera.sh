@@ -3,7 +3,7 @@
 # --- Path Configuration ---
 # This script assumes it is being run from the workspace root.
 PKG_NAME="tizio_bot_pkg"
-BAG_PATH="src/$PKG_NAME/rosbags/registrazione_teleop"
+BAG_PATH="src/$PKG_NAME/reconstructionsBags/registrazione_teleop"
 WORLD_PATH="src/$PKG_NAME/worlds/room.world"
 
 echo "================================================="
