@@ -42,7 +42,7 @@
             <ray> <!-- ray configuration -->
                 <scan>
                     <horizontal>
-                        <samples>360</samples> <!-- number of horizontal rays -->
+                        <samples>1060</samples> <!-- number of horizontal rays -->
                         <min_angle>-3.14</min_angle> <!-- min angle (-pi rad) -->
                         <max_angle>3.14</max_angle> <!-- max angle (+pi rad) -->
                     </horizontal>
