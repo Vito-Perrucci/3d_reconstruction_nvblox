@@ -41,8 +41,7 @@ def generate_launch_description():
             'map': os.path.join(
                 get_package_share_directory(package_name),
                 'maps',
-                'cones_save.yaml'
-                # 'face_to_wall_save.yaml'
+                'room_save.yaml'
             )
         }.items()
     )

@@ -19,7 +19,6 @@ from launch import LaunchDescription
 from launch.actions import OpaqueFunction
 from launch_ros.actions import Node
 from launch.substitutions import LaunchConfiguration
-from nvblox_ros_python_utils.nvblox_launch_utils import NvbloxMode
 
 def get_parameters(mode):
     """Return the list of parameter files for NVBlox based on the selected mode."""
@@ -77,9 +76,36 @@ def get_parameters(mode):
 def launch_setup(context, *args, **kwargs):
     """Create the NVBlox node with parameters and remappings based on mode and sensors."""
 
+    ## ARGUMENTS
+
+    # Organizational arguments
     mode_str = LaunchConfiguration('mode').perform(context)
     sensors_str = LaunchConfiguration('sensors').perform(context)
+    use_nav2_str = LaunchConfiguration('use_nav2').perform(context)
+
+    # Basic parameters
     parameters = get_parameters(mode_str)
+
+    # Additional parameters
+    voxel_size_value = LaunchConfiguration('voxel_size').perform(context)
+    frame_id_str = LaunchConfiguration('frame_id').perform(context)
+    global_frame_str = LaunchConfiguration('global_frame').perform(context)
+
+    parameters.append({
+        'voxel_size': float(voxel_size_value), 
+        'global_pose': frame_id_str, 
+        'global_frame': global_frame_str, 
+        'map_clearing_frame_id': frame_id_str,
+        'esdf_slice_bounds_visualization_attachment_frame_id': frame_id_str,
+        'workspace_height_bounds_visualization_attachment_frame_id': frame_id_str
+    })
+
+    # nav2 Changing for simulation
+    if use_nav2_str == 'true':
+        parameters.append({'global_frame': map})
+
+
+    ## REMAPPING
 
     # Remapping for 3DLiDAR-based mapping
     remapping_lidar_3d = [
@@ -88,7 +114,6 @@ def launch_setup(context, *args, **kwargs):
         ('camera_0/color/camera_info', '/camera/camera_info'),
         ('odom', '/odom'),
     ]
-
     # Remapping for depth-camera-based mapping
     remappings_depth=[
         ('camera_0/depth/image', '/camera/depth/image_raw'),
@@ -97,21 +122,40 @@ def launch_setup(context, *args, **kwargs):
         ('camera_0/color/camera_info', '/camera/camera_info'),
         ('odom', '/odom'),
     ]
+    # Remapping for real lidar and kiss-icp
+    remappings_kiss = [
+        ('pointcloud', '/rslidar_points'),
+        ('odom', '/kiss/odometry') 
+    ]
+
+    # Remapping for real lidar and Vicon
+    remappings_vicon = [
+        ('pointcloud', '/rslidar_points_fixed'),
+        ('odom', '/vicon/cane/cane') 
+    ]
+
     
     # Choose remapping based on sensor type
     if sensors_str == 'depth_camera':
-        chosen_params = remappings_depth
+        chosen_remappings = remappings_depth
     elif sensors_str == 'lidar_3D' or sensors_str == 'lidar_3D_and_Slam':
-        chosen_params = remapping_lidar_3d
+        chosen_remappings = remapping_lidar_3d
+    elif sensors_str == 'real_lidar_kiss':
+        chosen_remappings = remappings_kiss
+    elif sensors_str == 'real_lidar_vicon':
+        chosen_remappings = remappings_vicon
 
-    # NVBlox node
+
+    ## NVBlox NODE
+
     nvblox_node = Node(
         package='nvblox_ros',
         executable='nvblox_node',
         name='nvblox_node',
         output='screen',
         parameters=parameters,
-        remappings=chosen_params
+        remappings=chosen_remappings,
+        arguments=['--ros-args', '--log-level', 'warn']
     )
 
     return  [nvblox_node]
