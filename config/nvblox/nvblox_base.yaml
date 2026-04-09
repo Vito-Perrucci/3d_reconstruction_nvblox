@@ -1,14 +1,12 @@
 /**:
-  ros__parameters:
+  ros__parameters: 
     # cuda stream setting
     cuda_stream_type: 1  # 0: cuda default stream, 1: blocking async stream, 2: non blocking async stream, 3: per-thread default stream.
     # miscellaneous
-    voxel_size: 0.02
+    voxel_size: 0.1
     num_cameras: 1
     use_tf_transforms: true
     mapping_type: "static_tsdf"  # ["static_tsdf", "static_occupancy"]
-
-    #global_frame : map
 
     # Parameters governing frequency of different processing steps in the reconstruction pipeline.
     # Processing happens every n:th tick_period. <=0 means that no processing take place
@@ -40,11 +38,15 @@
     use_depth: true
     # lidar settings
     use_lidar: true
-    lidar_width: 360
+    lidar_width: 1080
     lidar_height: 32
     lidar_min_valid_range_m: 0.3
-    lidar_max_valid_range_m: 12.0
+    lidar_max_valid_range_m: 10.0
     use_non_equal_vertical_fov_lidar_params: false
+    lidar_vertical_fov_rad: 0.5236
+    min_angle_below_zero_elevation_rad: 0.2618
+    max_angle_above_zero_elevation_rad: 0.2618  
+
     # Input queues
     maximum_input_queue_length: 10
     # Map clearing settings
@@ -74,8 +76,8 @@
       do_depth_preprocessing: false
       depth_preprocessing_num_dilations: 3
       # projective integrator (tsdf/color/occupancy)
-      projective_integrator_max_integration_distance_m: 5.0
-      projective_integrator_truncation_distance_vox: 4.0
+      projective_integrator_max_integration_distance_m: 5.0 
+      projective_integrator_truncation_distance_vox: 4.0 #was 4.0
       projective_integrator_weighting_mode: "inverse_square_tsdf_distance_penalty"
       projective_integrator_max_weight: 5.0
       projective_tsdf_integrator_invalid_depth_decay_factor: -1.0
@@ -85,7 +87,7 @@
       unobserved_region_occupancy_probability: 0.5
       occupied_region_half_width_m: 0.1
       # view calculator
-      raycast_subsampling_factor: 1  # was 4
+      raycast_subsampling_factor: 4  # was 4
       workspace_bounds_type: "unbounded" # ["unbounded", "height_bounds", "bounding_box"]
       workspace_bounds_min_corner_x_m: 0.0
       workspace_bounds_min_corner_y_m: 0.0
