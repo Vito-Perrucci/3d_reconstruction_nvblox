@@ -32,7 +32,7 @@ include_directories(
 )
 
 install(
-  DIRECTORY config description include launch maps rosbag_records src worlds 
+  DIRECTORY config description include launch maps src worlds 
   DESTINATION share/${PROJECT_NAME}
 )
 
